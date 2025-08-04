@@ -7,10 +7,14 @@ from typing import Final
 from typing import List
 
 
+# ---- URLs ----
 
 BASE_URL: Final[str]="https://api.coingecko.com/api/v3/coins/markets"
 HISTORY_URL: Final[str]= "https://api.coingecko.com/api/v3/coins/{id}/market_chart"
 CURR_URL: Final[str]= "https://api.coingecko.com/api/v3/simple/supported_vs_currencies"
+
+
+# ---=-----------Class---------------------
 
 @dataclass()
 class Coin:
@@ -23,6 +27,8 @@ class Coin:
     price_change_24h: float
     price_change_percentage_24h: float
 
+
+# ---------------- Get Coins --------------
 @st.cache_data(show_spinner=False)
 def get_coins(vs_currency: str='usd', top_n:int =20) -> List["Coin"]:
     payload = {
@@ -51,6 +57,8 @@ def get_coins(vs_currency: str='usd', top_n:int =20) -> List["Coin"]:
         st.error(f"Error Fetching Coins: {e}")
         return []
     
+# ----------------Get All Currencies --------------------------
+
 @st.cache_data(show_spinner=False)
 def get_supported_currencies():
     
@@ -60,6 +68,8 @@ def get_supported_currencies():
     else:
         return['inr'] # fallback
     
+
+# -------------------- Display Coin History ---------------------
         
 @st.cache_data(show_spinner=False)
 def get_price_history(coin_id:str, vs_currency:str ='usd', days:str ='7') -> pd.DataFrame:
@@ -79,12 +89,13 @@ def get_price_history(coin_id:str, vs_currency:str ='usd', days:str ='7') -> pd.
         st.warning(f"Error Fetching History: {e}")
         return pd.DataFrame()
         
-    
+
+# ------------ Streamlit UI/UX  -------------------------------------
+
 st.set_page_config(page_title = "Crypto Tracker", layout="wide")
 
 st.title("💰 Real Time Cryptocurrency Tracker")
 
-#currency = st.sidebar.selectbox("Select Currency", ['inr','usd'])
 
 # Currency dropdown
 currency = st.sidebar.selectbox("Select Currency", get_supported_currencies())
@@ -92,7 +103,6 @@ currency = st.sidebar.selectbox("Select Currency", get_supported_currencies())
 top_n = st.sidebar.slider("Number of Top Coins",min_value=5,max_value=50,value=20)
 # Selectbox for duration
 duration = st.sidebar.selectbox("Time Duration (days)", ['1','7','30','90','180','365','max'])
-
 
 coins = get_coins(currency, top_n)
 
@@ -109,7 +119,8 @@ if coins:
     col2.metric("24 Low", f"{coin_obj.low_24h:,.2f}")
     col3.metric("24 Change (24h)", f"{coin_obj.price_change_percentage_24h:,.2f}%")
 
-# matplot
+# ---------------------------------- Matplots -----------------------------------
+
     df_history = get_price_history(coin_obj.id, vs_currency=currency, days=duration)
 
     if not df_history.empty:
@@ -117,7 +128,9 @@ if coins:
     else:
         st.info("No Historical Data Available")
 
-    # ---- Table Of Top Coins -----
+
+    # -------------------------- Table Of Top Coins -------------------------------
+
     st.subheader(f"🏆Top {top_n} Coins by Market Cap ({currency.upper()})")
 
     coin_table = pd.DataFrame([{
