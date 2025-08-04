@@ -10,6 +10,7 @@ from typing import List
 
 BASE_URL: Final[str]="https://api.coingecko.com/api/v3/coins/markets"
 HISTORY_URL: Final[str]= "https://api.coingecko.com/api/v3/coins/{id}/market_chart"
+CURR_URL: Final[str]= "https://api.coingecko.com/api/v3/simple/supported_vs_currencies"
 
 @dataclass()
 class Coin:
@@ -23,11 +24,11 @@ class Coin:
     price_change_percentage_24h: float
 
 @st.cache_data(show_spinner=False)
-def get_coins(vs_currency: str='usd') -> List["Coin"]:
+def get_coins(vs_currency: str='usd', top_n:int =20) -> List["Coin"]:
     payload = {
             'vs_currency':vs_currency,
         'order':'market_cap_desc',
-        'per_page':25,
+        'per_page':top_n,
         'page':1
     }
     try:
@@ -49,9 +50,19 @@ def get_coins(vs_currency: str='usd') -> List["Coin"]:
     except Exception as e:
         st.error(f"Error Fetching Coins: {e}")
         return []
+    
+@st.cache_data(show_spinner=False)
+def get_supported_currencies():
+    
+    response = requests.get(CURR_URL)
+    if response.status_code == 200:
+        return sorted(response.json())
+    else:
+        return['inr'] # fallback
+    
         
 @st.cache_data(show_spinner=False)
-def get_price_history(coin_id:str, vs_currency:str ='usd', days:int =7) -> pd.DataFrame:
+def get_price_history(coin_id:str, vs_currency:str ='usd', days:str ='7') -> pd.DataFrame:
     url = HISTORY_URL.format(id=coin_id)
     params = {'vs_currency' : vs_currency, 'days' : days}
 
@@ -71,10 +82,19 @@ def get_price_history(coin_id:str, vs_currency:str ='usd', days:int =7) -> pd.Da
     
 st.set_page_config(page_title = "Crypto Tracker", layout="wide")
 
-st.title("Real Time Cryptocurrency Tracker")
+st.title("💰 Real Time Cryptocurrency Tracker")
 
-currency = st.sidebar.selectbox("Select Currency", ['inr','usd'])
-coins = get_coins(currency)
+#currency = st.sidebar.selectbox("Select Currency", ['inr','usd'])
+
+# Currency dropdown
+currency = st.sidebar.selectbox("Select Currency", get_supported_currencies())
+# SLider for topcoins
+top_n = st.sidebar.slider("Number of Top Coins",min_value=5,max_value=50,value=20)
+# Selectbox for duration
+duration = st.sidebar.selectbox("Time Duration (days)", ['1','7','30','90','180','365','max'])
+
+
+coins = get_coins(currency, top_n)
 
 if coins:
     coin_names = [f"{coin.name}({coin.symbol.upper()})" for coin in coins]
@@ -90,11 +110,24 @@ if coins:
     col3.metric("24 Change (24h)", f"{coin_obj.price_change_percentage_24h:,.2f}%")
 
 # matplot
-    df_history = get_price_history(coin_obj.id, vs_currency=currency)
+    df_history = get_price_history(coin_obj.id, vs_currency=currency, days=duration)
 
     if not df_history.empty:
         st.line_chart(df_history.set_index('timestamp')['price'])
     else:
         st.info("No Historical Data Available")
+
+    # ---- Table Of Top Coins -----
+    st.subheader(f"🏆Top {top_n} Coins by Market Cap ({currency.upper()})")
+
+    coin_table = pd.DataFrame([{
+        'Name' : coin.name,
+        'Symbol': coin.symbol.upper(),
+        'Price' :f"{coin.current_price:,.2f} {currency.upper()}",
+        '24h Change (%)': f"{coin.price_change_percentage_24h:,.2f}",
+        'Market Cap' : f"{coin.current_price*1_000_000:.0f}"
+    } for coin in coins])   
+
+    st.dataframe(coin_table, use_container_width=True)
 else:
     st.error("No Coins Data Available")
