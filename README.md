@@ -30,6 +30,12 @@
 
 Access it here: https://crypto-pulse.streamlit.app/
 
+Disclaimer: It might not run if API calls are exhauseted for the day...so watch the attached demo and screenshots...
+
+Video: https://www.youtube.com/watch?v=ParMzrI9CvI
+
+Screenshots:
+
 <img width="1869" height="770" alt="image" src="https://github.com/user-attachments/assets/5e979baf-a334-417b-8c5a-5ce6d9bda95b" />
 
 <img width="1555" height="538" alt="image" src="https://github.com/user-attachments/assets/8e01f11d-4689-4a46-9c7e-b6932aaa9f80" />
