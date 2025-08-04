@@ -30,6 +30,8 @@
 
 Access it here: https://crypto-pulse.streamlit.app/
 
+<img width="1869" height="770" alt="image" src="https://github.com/user-attachments/assets/5e979baf-a334-417b-8c5a-5ce6d9bda95b" />
+
 <img width="1555" height="538" alt="image" src="https://github.com/user-attachments/assets/8e01f11d-4689-4a46-9c7e-b6932aaa9f80" />
 
 
@@ -48,6 +50,16 @@ Access it here: https://crypto-pulse.streamlit.app/
 | ✅ Responsive UX             | Designed with minimal layout friction                                                |
 
 
+---
+## 🛠️ Tech Stack
+
+| Layer      | Tool                                 |
+| ---------- | ------------------------------------ |
+| UI         | Streamlit                            |
+| Backend    | Python                               |
+| API Source | CoinGecko                            |
+| Plotting   | Matplotlib / Streamlit native charts |
+| Styling    | Streamlit Theme                      |
 ---
 
 ## 📂 File Structure
@@ -83,21 +95,13 @@ pip install -r requirements.txt
 
 
 # Step4. Running the app
-streamlit run crypto_tracker
+streamlit run crypto_tracker.py
 ```
----
-## 🛠️ Tech Stack
-| Layer      | Tool                                 |
-| ---------- | ------------------------------------ |
-| UI         | Streamlit                            |
-| Backend    | Python                               |
-| API Source | CoinGecko                            |
-| Plotting   | Matplotlib / Streamlit native charts |
-| Styling    | Streamlit Theme                      |
 
 ---
 ## Author
 
+- Hackathon: 🐍 PyWeb Creators
 - Team Name: Sableye
 - Name: Vaibhavi Srivastava
 - Github: [archangel2006](https://github.com/archangel2006)
