@@ -19,6 +19,8 @@
 
 > This app is hosted on Streamlit
 
+https://crypto-pulse.streamlit.app/
+
 <img width="1876" height="850" alt="image" src="https://github.com/user-attachments/assets/8bc87f73-881b-4d8f-96aa-32da71253c3b" />
 
 
