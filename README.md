@@ -17,9 +17,10 @@
 
 ## 📸 App Preview
 
-> _You can host this on Streamlit Cloud, Render, or run locally._
+> This app is hosted on Streamlit
 
-![Demo Screenshot](https://via.placeholder.com/800x400.png?text=CryptoPulse+Demo+Preview)
+<img width="1876" height="850" alt="image" src="https://github.com/user-attachments/assets/8bc87f73-881b-4d8f-96aa-32da71253c3b" />
+
 
 ---
 
