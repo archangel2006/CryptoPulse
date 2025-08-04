@@ -1,17 +1,26 @@
-# 🚀 CryptoPulse – Real-Time Cryptocurrency Tracker
+# 🪙 CryptoPulse – Real-Time Cryptocurrency Tracker
 
 ![CryptoPulse](https://img.shields.io/badge/Built%20with-Python%20%7C%20Streamlit-blue.svg)  
-> A sleek and fast crypto tracker app built with Python and Streamlit. Track prices, 24h changes, and visualize historical charts of the top 25 coins in real time.
+
+
+**🔥 Built with Streamlit | 100% Python-Powered Web Dashboard**
+
+> A blazing-fast, responsive **Real-Time Cryptocurrency Tracker** built entirely with **Streamlit**. This app tracks live crypto prices, trends, and top market movers across multiple fiat currencies and user-defined duration.
 
 ---
 
 ## 🧠 What is CryptoPulse?
 
 **CryptoPulse** is a simple yet powerful web app to **track real-time cryptocurrency prices** using the CoinGecko API. It includes:
-- 24-hour high/low data
-- Percentage price changes
-- Interactive charts of price history
+
+- Real-time price tracking for top cryptocurrencies
+-  Dynamic price history chart over any **selected duration** 
+- Supports **over 100 currencies**
+- Visualizes **real-time** price history
+- Choose and **display top coins**
+- **Interactive** charts of price history
 - Clean and minimal UI built with Streamlit
+- Fast performance
 
 ---
 
@@ -19,20 +28,25 @@
 
 > This app is hosted on Streamlit
 
-https://crypto-pulse.streamlit.app/
+Access it here: https://crypto-pulse.streamlit.app/
 
-<img width="1876" height="850" alt="image" src="https://github.com/user-attachments/assets/8bc87f73-881b-4d8f-96aa-32da71253c3b" />
+<img width="1555" height="538" alt="image" src="https://github.com/user-attachments/assets/8e01f11d-4689-4a46-9c7e-b6932aaa9f80" />
 
 
 ---
 
 ## ✨ Features
 
-- Real-time price tracking for top 25 cryptocurrencies
--  Dynamic price history chart (7-day)
-- Key metrics: Current price, 24H high/low, % change
-- Currency toggle
-- Fast performance 
+| Feature                     |                                                                        |
+| ---------------------------| ----------------------------------------------------------------------------------- |
+| 🔄 Live Crypto Data         | Fetches real-time prices from the [CoinGecko API](https://www.coingecko.com/en/api) |
+| 🌐 Multi-Currency Support   | Dynamically loads all supported fiat currencies                                     |
+| ⏳ Adjustable Duration       | View 1 day, 7 days, 30 days, or more of price history                               |
+| 🏆 Top Coins Slider         | Customize number of top cryptocurrencies displayed (5–50)                           |
+| 📊 Interactive Line Charts  | View historical price data per coin                                                 |
+| 🚀 100% Python — No HTML/JS | Pure Streamlit UI, matplotlib for charts                                            |
+| ✅ Responsive UX             | Designed with minimal layout friction                                                |
+
 
 ---
 
@@ -41,37 +55,49 @@ https://crypto-pulse.streamlit.app/
 ```
 📁 CryptoPulse/
 │
-├── crypto_tracker.py # Main Streamlit app
-├── requirements.txt # Required Python packages
-└── README.md # You're here!
+├── assets/             # demo screenshots
+├── crypto_tracker.py   # Main Streamlit app
+├── requirements.txt    # Required Python packages
+└── README.md           # documentation
 ```
-
-
 ---
 
 ## 📦 Installation
 
-### ✅ 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/cryptopulse.git
-cd cryptopulse
-```
-### 2. Create virtual environment
-```bash
+# Step 1. Clone the repository
+
+git clone https://github.com/archangel2006/CryptoPulse.git
+cd CryptoPulse
+
+
+# Step2. Create virtual environment
+
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-### 3. install dependencies
-```
+
+
+# Step3. install dependencies
+
 pip install -r requirements.txt
-```
-### 4. Running the app
-```
+
+
+# Step4. Running the app
 streamlit run crypto_tracker
 ```
+---
+## 🛠️ Tech Stack
+| Layer      | Tool                                 |
+| ---------- | ------------------------------------ |
+| UI         | Streamlit                            |
+| Backend    | Python                               |
+| API Source | CoinGecko                            |
+| Plotting   | Matplotlib / Streamlit native charts |
+| Styling    | Streamlit Theme                      |
 
 ---
 ## Author
 
+- Team Name: Sableye
 - Name: Vaibhavi Srivastava
 - Github: [archangel2006](https://github.com/archangel2006)
