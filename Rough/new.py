@@ -1,0 +1,138 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import requests
+from dataclasses import dataclass
+from typing import Final
+from typing import List
+
+
+
+BASE_URL: Final[str]="https://api.coingecko.com/api/v3/coins/markets"
+HISTORY_URL: Final[str]= "https://api.coingecko.com/api/v3/coins/{id}/market_chart"
+
+@dataclass()
+class Coin:
+    id:str
+    name:str
+    symbol:str
+    current_price: float
+    high_24h: float
+    low_24h: float
+    price_change_24h: float
+    price_change_percentage_24h: float
+
+@st.cache_data(ttl=600,show_spinner=False)
+def get_coins(vs_currency: str='usd') -> List["Coin"]:
+    payload = {
+            'vs_currency':vs_currency,
+        'order':'market_cap_desc',
+        'per_page':25,
+        'page':1
+    }
+    try:
+        response = requests.get(BASE_URL, params=payload)
+        response.raise_for_status()
+        data = response.json()
+        return[
+            Coin(
+                id = item['id'],
+                name = item['name'],
+                symbol = item['symbol'],
+                current_price = item['current_price'],
+                high_24h = item['high_24h'],
+                low_24h = item['low_24h'],
+                price_change_24h = item['price_change_24h'],
+                price_change_percentage_24h = item['price_change_percentage_24h']
+            ) for item in data
+        ]
+    except Exception as e:
+        st.error(f"Error Fetching Coins: {e}")
+        return []
+        
+@st.cache_data(ttl=600,show_spinner=False)
+def get_price_history(coin_id:str, vs_currency:str ='usd', days:int =7) -> pd.DataFrame:
+    url = HISTORY_URL.format(id=coin_id)
+    params = {'vs_currency' : vs_currency, 'days' : days}
+
+    try:
+        response = requests.get(url, params = params)
+        response.raise_for_status()
+        prices = response.json()['prices']
+
+        df = pd.DataFrame(prices, columns=['timestamp','price'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+        return df
+        
+    except Exception as e:
+        st.warning(f"Error Fetching History: {e}")
+        return pd.DataFrame()
+        
+    
+st.set_page_config(page_title = "Crypto Tracker", layout="wide")
+
+# ------------- Dark/Light Toggle -------------------
+
+theme = st.sidebar.radio("Select Theme", ["Light","Dark"])
+
+if theme == "Dark":
+    bg_color = "#0e1117"
+    text_color = "#fafafa"
+    metric_bg = "#72C77D"
+else:
+    bg_color = "#ffffff"
+    text_color = "#000000"
+    metric_bg = "#9fe1e4"
+
+st.markdown(
+    f"""
+    <style>
+        .stApp {{
+            background-color:{bg_color};
+            color:{text_color};
+        }}
+    </style>
+    """,
+    unsafe_allow_html=True
+
+)
+
+
+st.title("Real Time Cryptocurrency Tracker")
+
+currency = st.sidebar.selectbox("Select Currency", ['inr','usd'])
+coins = get_coins(currency)
+
+if coins:
+    coin_names = [f"{coin.name}({coin.symbol.upper()})" for coin in coins]
+    selected_coin = st.sidebar.selectbox("Select Coin", coin_names)
+    coin_obj = coins[coin_names.index(selected_coin)]
+
+    st.subheader(f"{coin_obj.name} ({coin_obj.symbol.upper()})")
+    st.metric("Current Price", f"{coin_obj.current_price:,.2f} {currency.upper()}")
+
+    with st.container():
+        st.markdown(f"""
+                    <div style='background-color:{metric_bg}; padding:15px; border-radius:10px')
+                    """, unsafe_allow_html =True)
+        col1,col2,col3 = st.columns(3)
+        col1.metric("24 High", f"{coin_obj.high_24h:,.2f}")
+        col2.metric("24 Low", f"{coin_obj.low_24h:,.2f}")
+        col3.metric("24 Change (24h)", f"{coin_obj.price_change_percentage_24h:,.2f}%")
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
+# matplot
+    df_history = get_price_history(coin_obj.id, vs_currency=currency)
+
+    if not df_history.empty:
+        st.markdown(f"""
+            <div style='border:1 px solid {text_color};padding:10px; border-radius:10px'>
+                    """,unsafe_allow_html=True)
+        st.line_chart(df_history.set_index('timestamp')['price'])
+
+        st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.info("No Historical Data Available")
+else:
+    st.error("No Coins Data Available")
